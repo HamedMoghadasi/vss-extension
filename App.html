@@ -2,27 +2,21 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <title>Work item form group sample</title>
+    <title>LeadTime and CycleTime</title>
   </head>
 
   <body style="overflow:auto;">
     <script src="lib/VSS.SDK.min.js"></script>
+    <script src="dist/jquery.min.js"></script>
 
     <script>
       VSS.init({
         explicitNotifyLoaded: true,
         usePlatformScripts: true
       });
-      VSS.require(["TFS/WorkItemTracking/Services"], function(
-        _WorkItemServices
-      ) {
-        // Get the WorkItemFormService.  This service allows you to get/set fields/links on the 'active' work item (the work item
-        // that currently is displayed in the UI).
-        function getWorkItemFormService() {
-          return _WorkItemServices.WorkItemFormService.getService();
-        }
 
-        var DateDifferenceInDay = function(firstDate, SecondDate) {
+      var diagramModule = {
+        DateDifferenceInDay: function(firstDate, SecondDate) {
           dt1 = new Date(firstDate);
           dt2 = new Date(SecondDate);
           return Math.floor(
@@ -30,30 +24,61 @@
               Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) /
               (1000 * 60 * 60 * 24)
           );
-        };
+        },
 
-        function calculateLeadTime(data) {
-          const createdDate = data["System.CreatedDate"];
-          $("#LeadTime").data("CreatedDate", createdDate.toISOString());
-          let now = new Date().toISOString();
+        calculateLeadTime: function(data) {
+          let createdOn = data["System.CreatedDate"].toLocaleDateString();
+          $("#LeadTime").data("CreatedDate", createdOn);
+          let closedOn = data[
+            "Microsoft.VSTS.Common.ClosedDate"
+          ].toLocaleDateString();
+          if (closedOn === null) {
+            closedOn = new Date().toLocaleDateString();
+          }
 
-          return DateDifferenceInDay(createdDate, now);
+          let days = diagramModule.DateDifferenceInDay(createdOn, closedOn);
+
+          return {
+            createdOn: createdOn,
+            closedOn: closedOn,
+            days: days
+          };
+        },
+
+        prepareLeadTimeContent: function(createdOn, closedOn, days) {
+          return `This work item <i><b>Created in ${createdOn} </b></i> and its go on till  <i><b> ${closedOn} </b></i> and its LeadTime days is<i><b> ${days} Days </b></i>`;
+        },
+        init: function() {}
+      };
+
+      VSS.require(["TFS/WorkItemTracking/Services"], function(
+        _WorkItemServices
+      ) {
+        function getWorkItemFormService() {
+          return _WorkItemServices.WorkItemFormService.getService();
         }
 
-        // Register a listener for the work item group contribution.
+        diagramModule.init();
+
         VSS.register(VSS.getContribution().id, function() {
           return {
-            // Called when a new work item is being loaded in the UI
             onLoaded: function(args) {
               getWorkItemFormService().then(function(service) {
-                // Get the current values for a few of the common fields
                 service
-                  .getFieldValues(["System.CreatedDate"])
+                  .getFieldValues([
+                    "System.CreatedDate",
+                    "Microsoft.VSTS.Common.ClosedDate"
+                  ])
                   .then(function(data) {
-                    var leadDate = calculateLeadTime(data);
-                    var result = `This work item <i><b>Created in ${new Date(
-                      data["System.CreatedDate"]
-                    ).toLocaleDateString()} </b></i> and its LeadTime is<i><b> ${leadDate} Days </b></i>`;
+                    console.log("serviceeee ---->", service);
+                    let leadTime = diagramModule.calculateLeadTime(data);
+
+                    let result = diagramModule.prepareLeadTimeContent(
+                      leadTime.createdOn,
+                      leadTime.closedOn,
+                      leadTime.days
+                    );
+
                     $("#diagram").html(result);
                   });
               });

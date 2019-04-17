@@ -2,8 +2,8 @@
   "manifestVersion": 1.0,
   "id": "leadTime-and-cycleTime-diagram",
   "publisher": "HamedMoghadasi",
-  "version": "0.2.4",
-  "name": "LeadTime and CycleTime diagram",
+  "version": "0.2.16",
+  "name": "LeadTime nd CycleTime diagram",
   "description": "Calculate and display LeadTime and CycleTime digram in each work item.",
   "public": false,
   "tags": ["LeadTime", "CycleTime", "LeadTime And CycleTime"],
@@ -27,6 +27,11 @@
       "path": "node_modules/vss-web-extension-sdk/lib",
       "addressable": true,
       "packagePath": "lib"
+    },
+    {
+      "path": "node_modules/jquery/dist",
+      "addressable": true,
+      "packagePath": "dist"
     }
   ],
   "contributions": [
