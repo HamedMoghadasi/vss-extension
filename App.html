@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Work item form group sample</title>
+  </head>
+
+  <body style="overflow:auto;">
+    <script src="lib/VSS.SDK.min.js"></script>
+
+    <script>
+      VSS.init({
+        explicitNotifyLoaded: true,
+        usePlatformScripts: true
+      });
+      VSS.require(["TFS/WorkItemTracking/Services"], function(
+        _WorkItemServices
+      ) {
+        // Get the WorkItemFormService.  This service allows you to get/set fields/links on the 'active' work item (the work item
+        // that currently is displayed in the UI).
+        function getWorkItemFormService() {
+          return _WorkItemServices.WorkItemFormService.getService();
+        }
+
+        var DateDifferenceInDay = function(firstDate, SecondDate) {
+          dt1 = new Date(firstDate);
+          dt2 = new Date(SecondDate);
+          return Math.floor(
+            (Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) -
+              Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) /
+              (1000 * 60 * 60 * 24)
+          );
+        };
+
+        function calculateLeadTime(data) {
+          const createdDate = data["System.CreatedDate"];
+          $("#LeadTime").data("CreatedDate", createdDate.toISOString());
+          let now = new Date().toISOString();
+
+          return DateDifferenceInDay(createdDate, now);
+        }
+
+        // Register a listener for the work item group contribution.
+        VSS.register(VSS.getContribution().id, function() {
+          return {
+            // Called when a new work item is being loaded in the UI
+            onLoaded: function(args) {
+              getWorkItemFormService().then(function(service) {
+                // Get the current values for a few of the common fields
+                service
+                  .getFieldValues(["System.CreatedDate"])
+                  .then(function(data) {
+                    var leadDate = calculateLeadTime(data);
+                    var result = `This work item <i><b>Created in ${new Date(
+                      data["System.CreatedDate"]
+                    ).toLocaleDateString()} </b></i> and its LeadTime is<i><b> ${leadDate} Days </b></i>`;
+                    $("#diagram").html(result);
+                  });
+              });
+            }
+          };
+        });
+
+        VSS.notifyLoadSucceeded();
+      });
+    </script>
+
+    <div id="diagram">
+      <span id="LeadTime" data-CreatedDate="" hidden></span>
+    </div>
+  </body>
+</html>

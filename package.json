@@ -1,0 +1,16 @@
+{
+  "name": "leadtime-and-cycletime-diagram",
+  "version": "1.0.0",
+  "description": "",
+  "main": "App.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" &&  exit 1"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "jquery": "^3.4.0",
+    "vss-web-extension-sdk": "^5.141.0"
+  }
+}
