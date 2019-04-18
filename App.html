@@ -15,7 +15,26 @@
         usePlatformScripts: true
       });
 
+      var webHook = {
+        get: function() {
+          $.ajax({
+            //Fake Address
+            url: "https://localhost:5001/api/workitem",
+            type: "GET",
+            dataType: "json",
+            success: function(result) {
+              console.log("ajaxData", result);
+              diagramModule.data = result;
+              console.log("end pushing data in ajax");
+            }
+          });
+        },
+
+        init: function() {}
+      };
       var diagramModule = {
+        data: {},
+
         DateDifferenceInDay: function(firstDate, SecondDate) {
           dt1 = new Date(firstDate);
           dt2 = new Date(SecondDate);
@@ -27,16 +46,20 @@
         },
 
         calculateLeadTime: function(data) {
-          let createdOn = data["System.CreatedDate"].toLocaleDateString();
+          webHook.get();
+          let a = diagramModule.data;
+          console.log("get data -------> ", a);
+          let createdOn = data["System.CreatedDate"];
           $("#LeadTime").data("CreatedDate", createdOn);
-          let closedOn = data[
-            "Microsoft.VSTS.Common.ClosedDate"
-          ].toLocaleDateString();
+          let closedOn = data["Microsoft.VSTS.Common.ClosedDate"];
           if (closedOn === null) {
-            closedOn = new Date().toLocaleDateString();
+            closedOn = new Date();
           }
 
-          let days = diagramModule.DateDifferenceInDay(createdOn, closedOn);
+          let days = diagramModule.DateDifferenceInDay(
+            createdOn,
+            closedOn.toLocaleDateString()
+          );
 
           return {
             createdOn: createdOn,
@@ -59,6 +82,7 @@
         }
 
         diagramModule.init();
+        webHook.init();
 
         VSS.register(VSS.getContribution().id, function() {
           return {
@@ -66,6 +90,7 @@
               getWorkItemFormService().then(function(service) {
                 service
                   .getFieldValues([
+                    "System.Id",
                     "System.CreatedDate",
                     "Microsoft.VSTS.Common.ClosedDate"
                   ])
@@ -74,8 +99,8 @@
                     let leadTime = diagramModule.calculateLeadTime(data);
 
                     let result = diagramModule.prepareLeadTimeContent(
-                      leadTime.createdOn,
-                      leadTime.closedOn,
+                      leadTime.createdOn.toLocaleDateString(),
+                      leadTime.closedOn.toLocaleDateString(),
                       leadTime.days
                     );
 
