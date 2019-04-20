@@ -14,39 +14,11 @@
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
     <script src="modules/highchartsModules.js"></script>
     <script src="scripts/App.js"></script>
+    <script src="modules/vssModules.js"></script>
 
     <script>
-      VSS.init({
-        explicitNotifyLoaded: true,
-        usePlatformScripts: true
-      });
-      VSS.require(["TFS/WorkItemTracking/Services"], function(
-        _WorkItemServices
-      ) {
-        function getWorkItemFormService() {
-          return _WorkItemServices.WorkItemFormService.getService();
-        }
-
-        VSS.register(VSS.getContribution().id, function() {
-          return {
-            onLoaded: function(args) {
-              getWorkItemFormService().then(function(service) {
-                service
-                  .getFieldValues([
-                    "System.Id",
-                    "System.CreatedDate",
-                    "Microsoft.VSTS.Common.ClosedDate"
-                  ])
-                  .then(function(data) {
-                    diagramModule.draw(data);
-                  });
-              });
-            }
-          };
-        });
-
-        VSS.notifyLoadSucceeded();
-      });
+      vssModule.init();
+      vssModule.initialize();
     </script>
 
     <div id="diagram">
