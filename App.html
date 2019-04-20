@@ -3,11 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <title>LeadTime and CycleTime</title>
-    <style>
-      #diagramContainer {
-        margin: 0 auto;
-      }
-    </style>
+    <link rel="stylesheet" href="styles/app.css" />
   </head>
 
   <body style="overflow:auto;">
@@ -16,165 +12,20 @@
     <script src="https://code.highcharts.com/highcharts.js"></script>
     <script src="https://code.highcharts.com/modules/series-label.js"></script>
     <script src="https://code.highcharts.com/modules/exporting.js"></script>
+    <script src="modules/highchartsModules.js"></script>
+    <script src="scripts/App.js"></script>
 
     <script>
       VSS.init({
         explicitNotifyLoaded: true,
         usePlatformScripts: true
       });
-
-      var webHook = {
-        get: function() {
-          $.ajax({
-            //Fake Address
-            url: "https://localhost:5001/api/workitem",
-            type: "GET",
-            dataType: "json",
-            success: function(result) {
-              console.log("ajaxData", result);
-              diagramModule.data = result;
-              console.log("end pushing data in ajax");
-            }
-          });
-        },
-
-        init: function() {}
-      };
-      var diagramModule = {
-        data: {},
-
-        DateDifferenceInDay: function(firstDate, SecondDate) {
-          dt1 = new Date(firstDate);
-          dt2 = new Date(SecondDate);
-
-          return Math.floor(
-            (Date.UTC(dt2.getFullYear(), dt2.getMonth(), dt2.getDate()) -
-              Date.UTC(dt1.getFullYear(), dt1.getMonth(), dt1.getDate())) /
-              (1000 * 60 * 60 * 24)
-          );
-        },
-
-        calculateLeadTime: function(data) {
-          let createdOn = data["System.CreatedDate"];
-          let closedOn = data["Microsoft.VSTS.Common.ClosedDate"];
-
-          if (closedOn === null) {
-            closedOn = new Date();
-          }
-
-          let days = diagramModule.DateDifferenceInDay(
-            createdOn,
-            closedOn.toLocaleDateString()
-          );
-
-          return {
-            createdOn: createdOn,
-            closedOn: closedOn,
-            days: days
-          };
-        },
-
-        prepareLeadTimeContent: function(createdOn, closedOn, days) {
-          return `This work item <i><b>Created in ${createdOn} </b></i> and its go on till  <i><b> ${closedOn} </b></i> and its LeadTime days is<i><b> ${days} Days </b></i>`;
-        },
-
-        draw: function(data) {
-          Highcharts.chart("diagramContainer", {
-            chart: {
-              height: 150,
-              type: "spline"
-            },
-            title: false,
-            subtitle: false,
-            xAxis: {
-              type: "datetime",
-              labels: {
-                formatter: function() {
-                  return Highcharts.dateFormat("%d %b %Y", this.value);
-                }
-              },
-              title: {
-                text: null
-              }
-            },
-            yAxis: {
-              tickInterval: 1,
-              visible: false,
-              title: {
-                text: null
-              },
-              min: 0
-            },
-            time: {
-              dateformat: "%Y-%m-%d"
-            },
-            tooltip: {
-              headerFormat: "<b>{series.name}</b><br>",
-              pointFormat: "{point.x:%Y-%m-%d}"
-            },
-
-            plotOptions: {
-              spline: {
-                marker: {
-                  enabled: true
-                }
-              },
-              series: {
-                lineWidth: 5
-              }
-            },
-            legend: {
-              enabled: true,
-              align: "center",
-              verticalAlign: "top",
-              y: 0,
-              floating: true
-            },
-            exporting: { enabled: false },
-            colors: ["#ef5661", "#6CF"],
-            credits: {
-              enabled: false
-            },
-
-            // Define the data points. All series have a dummy year
-            // of 1970/71 in order to be compared on the same x axis. Note
-            // that in JavaScript, months start at 0 for January, 1 for February etc.
-            series: [
-              {
-                name: "Lead Time",
-                data: [
-                  [new Date(data.createdOn).getTime(), 0.2],
-                  [new Date(data.closedOn).getTime(), 0.2]
-                ]
-              },
-              {
-                name: "Cycle Time",
-                data: [
-                  [new Date(data.startedOn).getTime(), 0.4],
-                  [new Date(data.closedOn).getTime(), 0.4]
-                ]
-              }
-            ]
-          });
-        },
-
-        init: function() {
-          console.log("init dm data", diagramModule.data);
-          console.log("Hello, we are at the begginig of diagram init");
-
-          console.log("End Of diagram init");
-        }
-      };
-
       VSS.require(["TFS/WorkItemTracking/Services"], function(
         _WorkItemServices
       ) {
         function getWorkItemFormService() {
           return _WorkItemServices.WorkItemFormService.getService();
         }
-
-        diagramModule.init();
-        webHook.init();
 
         VSS.register(VSS.getContribution().id, function() {
           return {
@@ -187,25 +38,7 @@
                     "Microsoft.VSTS.Common.ClosedDate"
                   ])
                   .then(function(data) {
-                    console.log("serviceeee ---->", data);
-                    console.log(
-                      "startedDate ---->",
-                      data["Microsoft.VSTS.Scheduling.StartDate"]
-                    );
-
-                    let leadTime = diagramModule.calculateLeadTime(data);
-                    var diagramData = {
-                      createdOn: leadTime.createdOn,
-                      startedOn: leadTime.closedOn - 7 * 24 * 60 * 60 * 1000,
-                      closedOn: leadTime.closedOn
-                    };
-                    diagramModule.draw(diagramData);
-
-                    let result = diagramModule.prepareLeadTimeContent(
-                      leadTime.createdOn.toLocaleDateString(),
-                      leadTime.closedOn.toLocaleDateString(),
-                      leadTime.days
-                    );
+                    diagramModule.draw(data);
                   });
               });
             }
