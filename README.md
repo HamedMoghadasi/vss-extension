@@ -1,8 +1,10 @@
-<div align="left">
+<p align="left">
 
 [![Build Status](https://travis-ci.org/HamedMoghadasi/vss-extension.svg?branch=master)](https://travis-ci.org/HamedMoghadasi/vss-extension)
 
-</div>
+<a href="https://marketplace.visualstudio.com/items?itemName=msjsdiag.debugger-for-chrome" rel="nofollow"><img src="https://camo.githubusercontent.com/ba4a9cf151e26ca9d1ff96df26591fdad8418c7c/68747470733a2f2f76736d61726b6574706c61636562616467652e61707068622e636f6d2f76657273696f6e2f6d736a73646961672e64656275676765722d666f722d6368726f6d652e7376673f6c6162656c3d4465627567676572253230666f722532304368726f6d65" alt="Marketplace bagde" data-canonical-src="https://vsmarketplacebadge.apphb.com/version/msjsdiag.debugger-for-chrome.svg?label=Debugger%20for%20Chrome"></a>
+
+</p>
 
 # Azure DevOps Extension
 leadtime & cycletime extension
