@@ -1,3 +1,9 @@
+<div align="left">
+
+[![Build Status](https://travis-ci.org/HamedMoghadasi/vss-extension.svg?branch=master)](https://travis-ci.org/HamedMoghadasi/vss-extension)
+
+</div>
+
 # Azure DevOps Extension
 leadtime & cycletime extension
 
