@@ -63,5 +63,7 @@ var webHook = {
     });
   },
 
-  init: function() {}
+  init: function() {
+    console.log("keeeeeeeeeeeeeenny! Testing CI Proccess");
+  }
 };
