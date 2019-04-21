@@ -1,6 +1,6 @@
-<div align="center">
+<div align="right">
 
-[![Build Status](https://travis-ci.org/dwyl/learn-travis.svg?branch=master)](https://travis-ci.org/HamedMoghadasi/vss-extension)
+[![Build Status](https://travis-ci.org/HamedMoghadasi/vss-extension.svg?branch=master)](https://travis-ci.org/HamedMoghadasi/vss-extension)
 
 </div>
 
