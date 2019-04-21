@@ -1,4 +1,4 @@
-<div align="right">
+<div align="left">
 
 [![Build Status](https://travis-ci.org/HamedMoghadasi/vss-extension.svg?branch=master)](https://travis-ci.org/HamedMoghadasi/vss-extension)
 
