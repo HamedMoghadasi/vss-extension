@@ -18,5 +18,6 @@ var app = {
 
   init: function() {
     webHook.get();
+    console.log("Hooooooooray!");
   }
 };
