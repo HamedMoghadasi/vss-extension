@@ -44,13 +44,6 @@ var highchartsModule = {
           lineWidth: 5
         }
       },
-      // legend: {
-      //   enabled: true,
-      //   align: "center",
-      //   verticalAlign: "top",
-      //   y: 0,
-      //   floating: true
-      // },
       exporting: { enabled: false },
       colors: ["#ef5661", "#6CF"],
       credits: {
