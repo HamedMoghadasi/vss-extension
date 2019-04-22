@@ -1,6 +1,6 @@
 var highchartsModule = {
   draw: function(diagramData) {
-    Highcharts.chart("diagramContainer", {
+    Highcharts.chart("Container", {
       chart: {
         height: 150,
         type: "spline"
@@ -44,13 +44,13 @@ var highchartsModule = {
           lineWidth: 5
         }
       },
-      legend: {
-        enabled: true,
-        align: "center",
-        verticalAlign: "top",
-        y: 0,
-        floating: true
-      },
+      // legend: {
+      //   enabled: true,
+      //   align: "center",
+      //   verticalAlign: "top",
+      //   y: 0,
+      //   floating: true
+      // },
       exporting: { enabled: false },
       colors: ["#ef5661", "#6CF"],
       credits: {
@@ -68,8 +68,8 @@ var highchartsModule = {
         {
           name: "Cycle Time",
           data: [
-            [new Date(diagramData.startedOn).getTime(), 0.4],
-            [new Date(diagramData.closedOn).getTime(), 0.4]
+            [new Date(diagramData.startedOn).getTime(), 0.6],
+            [new Date(diagramData.closedOn).getTime(), 0.6]
           ]
         }
       ]

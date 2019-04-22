@@ -2,7 +2,7 @@
   "manifestVersion": 1.0,
   "id": "leadTime-and-cycleTime-diagram",
   "publisher": "HamedMoghadasi",
-  "version": "0.4.6",
+  "version": "0.4.23",
   "name": "LeadTime nd CycleTime diagram",
   "description": "Calculate and display LeadTime and CycleTime digram in each work item.",
   "public": false,
@@ -66,7 +66,7 @@
       "properties": {
         "name": "Lead And Cycle Time Diagram",
         "uri": "App.html",
-        "height": 200
+        "height": 250
       }
     }
   ]

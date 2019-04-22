@@ -1,3 +1,8 @@
-#diagramContainer {
+#Container {
   margin: 0 auto;
+}
+#Information {
+  color: black;
+  text-align: center;
+  font-size: 13px;
 }
